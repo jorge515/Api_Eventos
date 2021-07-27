@@ -99,7 +99,7 @@ app.use((request, response)=>{
     })
 })
 
-const PORT= 3002
 app.listen(PORT,()=>{
     console.log('Server running en port ${PORT}') 
+    const PORT= process.env.PORT || 3001
 })
