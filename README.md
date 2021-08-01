@@ -1,4 +1,4 @@
-# Api_Vehiculos
-Api  de vehículos desarrollada en Node.js
+# Api_Eventos
+Api  de Eventos desarrollada en Node.js
 
 https://floating-everglades-21432.herokuapp.com/
