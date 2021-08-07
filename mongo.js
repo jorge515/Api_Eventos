@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
-const password= require('./password.js')
+//const password= require('./password.js')
 //const {model , Schema}= mongoose
 
-const connectionString='mongodb+srv://Hopicuvo1:<password>@cluster0.gahqv.mongodb.net/automovil?retryWrites=true&w=majority'
-
+const connectionString=process.env.MONGO_DB_URI
+//mongodb+srv://root:<password>@cluster0.cbbyq.mongodb.net/test
 //const connectionString= 'mongodb+srv://Hopicuvo1:${password}@cluster0.gahqv.mongodb.net/test'
 
 mongoose.connect(connectionString,{
@@ -13,49 +13,36 @@ mongoose.connect(connectionString,{
    useCreateIndex:true
 })
 
-
-
   .then(()=>{
       console.log('Database conectada')
   }).catch(err =>{
       console.error(err)
   })
 
-  //const autoSchema = new Schema({
-    //vehiculo:   String,
-    //marca:      String,
-    //anio:       Number,
-   // descripcion: String,
-    //vendido:   Boolean,
-    //created:   Date,
-   // updated:   Date
-  //})
-
-  //const Auto = model('Auto', autoSchema)
+   
 
  // Auto.find({}).then(result=>{
      // console.log(result)
      // mongoose.connection.close()
  // })
 
+    //const Evento = model('Evento', eventoSchema)
+    //const evento = new Evento({
+       // Título:        'Reunion',
+       // Descripción:   'Capacitacion',
+        //Destacado:     true,
+       // Lugar:         'Remoto',
+       // Imágen:        ("https://picsum.photos/120/120"),
+        //Lista_de_fechas:   '2021/08/01'
 
-  //const auto= new Auto({
-    //vehiculo:   'Camioneta',
-    //marca:     'Toyota',
-    //anio:       '2021',
-    //descripcion: 'doble cabina',
-    //vendido:   true,
-    //created:  new Date(),
-    //updated:   new Date()
+ // })
 
-  //})
-
-  //auto.save()
+  //evento.save()
     //.then(result =>{
-        //console.log(result)
+       // console.log(result)
        // mongoose.connection.close()
-   // })
+   //})
     //.catch(err =>{
        //console.error(err)
-   // })
+    //})
 

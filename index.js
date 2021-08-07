@@ -1,10 +1,12 @@
-
+require('dotenv').config()
+require('./mongo')
 const express = require('express')
 const app= express()
 const cors = require('cors')
-const Vehiculo= require('./models/Auto')
+const Evento= require('./models/Evento')
+//const { noExtendLeft } = require('sequelize/types/lib/operators')
 //const logger= require('./loggerMiddleware')
-require('./mongo')
+
 
 
 app.use(cors())
@@ -13,56 +15,83 @@ app.use(express.json())
 
 //const http= require('http')
 
-let vehiculos=[]
-    //{
-        //"id":1,
-        //"content":"Aprendiendo Node.js",
-        //"date":"2021-05-10",
-        //"important":true
-   // },
-   // {
-       // "id":2,
-        //"content":"Aprendiendo Node.js",
-       // "date":"2021-05-10",
-       // "important":false
-    //},
-    //{
-        //"id":3,
-       // "content":"Repasando conceptos en  Node.js",
-       // "date":"2021-05-10",
-       // "important":true
-   // }
-//]
-
-
-//const app = http.createServer((request , response)=> {
-   // response.writeHead(200,{'content-'})
-    //response.end('Hello World')
-//})
 
 app.get('/',(request,response)=>{
-    response.send('<h1> Automoviles</h1>')
+    response.send('<h1> Listado de Eventos</h1>')
 })
 
-app.get('/api/vehiculos',(request, response)=>{
-    Vehiculo.find({}).then(vehiculos=>{
-        response.json(vehiculos)
+app.get('/api/eventos',(request, response)=>{
+    Evento.find({}).then(evento=>{
+        response.json(evento)
 
     })
      
 })
 
-app.get('/api/notes/:id',(request, response)=>{
-    const id=Number(request.params.id)
-    const note= notes.find(note =>note.id === id)
-    if (note){
-        response.json(note)
-    }else{
-     response.status(404).end()
+app.get('/api/eventos/:id',(request, response,next)=>{
+    const {id} = request.params
+    //const evento= eventos.find(note =>note.id === id)
+    Evento.findById(id).then(evento=>{
+        if (evento){
+            return response.json(evento)
+        }else{
+         response.status(404).end()
+        }
+    }).catch(err =>{
+        next(err)
+        
+    })
+   
+    })
+
+
+app.post('/api/eventos',(request, response)=>{
+    const evento = request.body
+
+    if (!evento.titulo){
+        return response.status(400).json({
+            error: 'required "titulo" field is missing'
+        })
     }
-    //console.log({note})
-    //response.json(note)
+    const event = new Evento({
+        titulo:        evento.titulo,
+        descripción:   evento.descripcion,
+        destacado:     evento.destacado,
+        lugar:         evento.lugar,
+        imágen:        ("https://picsum.photos/120/120"),
+        lista_de_fechas:   evento.lista_de_fechas
+    })
+   
+    
+    //console.log(note)
+    event.save().then(savedEvento=>{
+        response.json(savedEvento)
+    
 })
+
+})
+
+app.put('api/eventos/:id',(request , response , next) =>{
+    const {id}= request.params
+    const evento = request.body
+
+    const newEventoinfo ={
+        titulo:        evento.titulo,
+        descripción:   evento.descripcion,
+        destacado:     evento.destacado,
+        lugar:         evento.lugar,
+        imágen:        evento.imagen,
+        lista_de_fechas:   evento.lista_de_fechas
+
+    }
+    Evento.findByIdAndUpdate(id, newEventoinfo,{new : true})
+      .then(result => {
+          response.json(result)
+      })
+})
+
+
+
 
 app.delete('/api/notes/:id',(request, response)=>{
     const id=Number(request.params.id)
@@ -70,36 +99,25 @@ app.delete('/api/notes/:id',(request, response)=>{
     response.status(204).end()
 })
 
-app.post('/api/notes',(request, response)=>{
-    const note = request.body
-    if (!note || !note.content){
-        return response.status(400).json({
-            error: 'note.content is missing'
-        })
-    }
-
-
-    const ids= notes.map(note => note.id)
-    const maxId= Math.max(...ids)
-
-    const newNote = {
-        id:maxId + 1,
-        content : note.content,
-        important: typeof note.important != 'undefined'? note.important :false,
-        date: new Date().toISOString()
-    }
-    //console.log(note)
-    notes=[...notes, newNote]
-    response.json(newNote)
+app.use((error, response ,next)=>{
+    response.status(404).end()
 })
 
-app.use((request, response)=>{
-    response.status(404).json({
-        error:'Not found'
+
+app.use((error , request , response ,next) => {
+    console.error(error)
+    //console.log(error.name)
+    if (error.name === 'CastError'){
+        response.status(400).send({ error: 'id utilizada es incorrecta'})
+    } else{
+        response.status(500).end()
+    }
     })
+    
+
+const PORT= process.env.PORT 
+app.listen(PORT, () => {
+    console.log(`Server running en port ${PORT}`) 
+    
 })
 
-app.listen(PORT,()=>{
-    console.log('Server running en port ${PORT}') 
-    const PORT= process.env.PORT || 3001
-})

@@ -1,0 +1,15 @@
+POST http://localhost:3010/api/eventos
+Content-Type: application/json
+
+{
+    "content":"Esto es un nuevo evento",
+    "important": true
+}
+
+###
+POST http://localhost:3010/api/eventos
+Content-Type: application/json
+
+{
+
+}
