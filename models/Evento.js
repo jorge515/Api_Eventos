@@ -7,7 +7,7 @@ const eventoSchema = new Schema({
     destacado:     Boolean,
     lugar:         String,
     imagen:   String,
-    lista_de_fechas:   String 
+    lista_de_fechas:   Date 
   })
 
   eventoSchema.set('toJSON',{

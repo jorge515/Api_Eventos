@@ -17,16 +17,28 @@ app.use(express.json())
 
 
 app.get('/',(request,response)=>{
-    response.send('<h1> Listado de Eventos</h1>')
+    response.send('<h1> Aplicacion de  Eventos</h1>')
 })
 
-app.get('/api/eventos',(request, response)=>{
-    Evento.find({}).then(evento=>{
-        response.json(evento)
+app.get('/api/eventos/destacado',(request, response)=>{
+    Evento.find({"destacado": true}).then(eventos=>{
+        response.json(eventos)
 
     })
+
+
+//app.get('/api/eventos/orden',(request, response)=>{
+    //collection.find().sort('-date').exec(function(err, collectionItems){
+            //.then(eventos=>{
+            //response.json(eventos)
+    
+    // Evento.fin  
+   // }
+    //})
+
+    //}))
      
-})
+
 
 app.get('/api/eventos/:id',(request, response,next)=>{
     const {id} = request.params
@@ -45,7 +57,7 @@ app.get('/api/eventos/:id',(request, response,next)=>{
     })
 
 
-app.post('/api/eventos',(request, response)=>{
+app.post('/api/eventos/creacion',(request, response)=>{
     const evento = request.body
 
     if (!evento.titulo){
@@ -58,7 +70,7 @@ app.post('/api/eventos',(request, response)=>{
         descripción:   evento.descripcion,
         destacado:     evento.destacado,
         lugar:         evento.lugar,
-        imágen:        ("https://picsum.photos/120/120"),
+        imagen:        evento.imagen,
         lista_de_fechas:   evento.lista_de_fechas
     })
    
